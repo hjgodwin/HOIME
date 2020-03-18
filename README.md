@@ -1,4 +1,4 @@
-# HOIME
+# Here's One I Made Earlier
  <img align="right" src="readmeFiles/hoime.png" width='240' height='180'>**Here's One I Made Earlier** is a collection of psychology experiments for use, reuse and learning.  The focus here for now is sharing studies that can be run online. 
 
  If you'd like to contribute please do get in touch.
@@ -15,8 +15,8 @@
 
 # List of Current Experiments
 
- - Visual search task using jsPsych. [work in progress]
- - Visual memory task also using jsPsych. [work in progress]
+ - **simpleSearchTask** : Visual search task using jsPsych. [work in progress]
+ - **simpleMemoryTask**: Visual memory task also using jsPsych. [work in progress]
 
 # What's all this Here's One I Made Earlier nonsense?
 
