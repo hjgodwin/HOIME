@@ -3,7 +3,6 @@
 
  If you'd like to contribute please do get in touch.
 
-
 # Software Used
 
  So far, the experiments available below use the popular and really very awesome [jsPsych](https://www.jspsych.org/). There are some details that are worth bearing in mind for this:
@@ -15,8 +14,18 @@
 
 # List of Current Experiments
 
- - **simpleSearchTask** : Visual search task using jsPsych. [work in progress]
+ - **simpleSearchTask** : Visual search task using jsPsych.
  - **simpleMemoryTask**: Visual memory task also using jsPsych. [work in progress]
+
+ ## Simple Search Task
+
+ This is a simple visual search task where a T-shaped target appears on 50% of trials. The objects can be either orange or blue, and their colour is chosen at random when a participant starts the study. Alternatively, you can feed in the url index.html?target='0' or index.html?target='8' to pick the targets specifically.
+
+ The target colours were picked from a perceptually equal colour space developed in [previous research by my colleagues](https://www.ncbi.nlm.nih.gov/pubmed/22004194). 
+
+ ## Simple Memory Task
+
+ This is still being put together.
 
 # What's all this Here's One I Made Earlier nonsense?
 

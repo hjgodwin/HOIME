@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="js/snap.svg-min.js"></script>
+  <script src="jspsych.js"></script>
+  <script src="plugins/jspsych-html-keyboard-response.js"></script>
+  <script src="plugins/jspsych-visual-search-simple-task.js"></script>
+  <script src="plugins/jspsych-external-html.js"></script>
+  <link rel="stylesheet" href="css/jspsych.css"></link>
+</head>
+<body></body>
+
+<script>
+
+  // SET PPT ID AND CONDITION INFORMATION ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// generate a random subject ID with 15 characters
+	var subject_id = jsPsych.randomization.randomID(15);
+
+  var urlTarget = parseInt(jsPsych.data.getURLVariable('target'));
+
+  var target_assignment = 99;
+
+  // CAN EITHER SET THE TARGET/OBJECT COLOUR MANUALLY OR IT RANDOMLY PICKS ONE
+  if (urlTarget != 0 & urlTarget != 8){
+    console.log('picking target auto');
+   target_assignment = jsPsych.randomization.sampleWithoutReplacement([0, 8], 1)[0];
+  }
+
+  if (urlTarget == 0 & urlTarget == 8){
+      target_assignment = urlTarget;
+  }
+
+	// record the condition assignment in the jsPsych data
+	// this adds a property called 'subject' and a property called 'condition' to every trial
+	jsPsych.data.addProperties({
+	  subject: subject_id
+	});
+
+  // INSTRUCTION DISPLAYS ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // CONSENT FORM
+  var consentForm = {
+    type:'external-html',
+    url: "consent.html",
+    cont_btn: "start",
+    check_fn: check_consent
+  };
+
+  // sample function that might be used to check if a subject has given
+  // consent to participate.
+  var check_consent = function(elem) {
+    if (document.getElementById('consent_checkbox').checked) {
+      return true;
+    }
+    else {
+      alert("If you wish to participate, you must check the box next to the statement 'I agree to participate in this study.'");
+      return false;
+    }
+    return false;
+  };
+
+  var instructionsPractice = {
+    type: 'html-keyboard-response',
+    stimulus: '<h1>Instructions</h1><p align="left"><i>Note: this is a practice example experiment and no data are saved.</i></p><p align="left">During this experiment, you will be asked to look for a T shape in the displays. An example is shown below.</p> <img src="img/T' + target_assignment +'.BMP"> <p align="left"> If you see a T shape, press the J key. If you see no T shapes, then press the F key. </p><p align="left">The T can be presented from any angle - the right way up, upside-down, or to the left or the right. There will be a maximum of one T shape per display, so as soon as you have seen the T shape, press the J key on your keyboard. </p> <p align="left">Try to be as fast but also as accurate as you can when working through the trials. </p><p align="left">Between each display, you will see a lone T shape in the middle of the display to remind you what you are looking for.</p> <p align="left">We will begin with a few practice trials for the primary task.<br><br><b>Press any key when you are ready to start. </b></p>'
+  }
+
+  var instructionsMain = {
+    type: 'html-keyboard-response',
+    stimulus: '<h1>Main Task About to Begin</h1><p align="left">You have now completed the pracitce trials - well done! It is now time to begin the real trials. <br><br><b>Press any key when you are ready to start. </b></p>'
+  }
+
+  var instructionsBreak = {
+    type: 'html-keyboard-response',
+    stimulus: '<h1>Break Time</h1><p align="center">You now have the opportunity to take a break.</p> <p align="center">Please take as long as you like, and then press any key to proceed.</p>'
+  }
+
+  var instructionsDebrief= {
+    type: 'html-keyboard-response',
+    stimulus: '<h1>Visual Search Task Example</h1>'+
+'<h2>Debriefing Statement</h2>'+
+'Thanks for taking part!'
+  }
+
+  // SEARCH TASK TRIALS ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  var presentTrial= {
+    target_present: true,
+    set_size: 20
+  }
+
+  var absentTrial = {
+    target_present: false,
+    set_size: 20
+  }
+
+  // SET UP SEARCH TASK TRIALS PRACTICE
+  var timelinePracticeTrials = [];
+  var practicePerBlock = 1;
+  for (var t = 0; t < practicePerBlock; t++) {
+    if (t < 5){ timelinePracticeTrials.push(presentTrial);}
+    if (t >=5){ timelinePracticeTrials.push(absentTrial);}
+  }
+
+  timelinePracticeTrials = jsPsych.randomization.shuffle(timelinePracticeTrials);
+
+  // SET UP SEARCH TASK TRIALS 
+  var timelineTrials = [];
+  var trialsPerBlock = 3;
+  for (var t = 0; t < trialsPerBlock; t++) {
+    if (t < 5){ timelineTrials.push(presentTrial);}
+    if (t >=5){ timelineTrials.push(absentTrial);}
+  }
+
+  var trialsPractice = {
+    type: 'visual-search-simple-task',
+    data: {task: 'primary', is_practice:true},
+    target: 'img/T0.BMP', 
+    target_colour: target_assignment,
+    foil: ['img/L0.BMP', 'img/L0_A.BMP', 'img/L0_B.BMP', 'img/L0_C.BMP'],
+    isi: 1000,
+    fixation_image: 'img/fixation.gif',
+    timeline: timelinePracticeTrials
+  };
+
+  var trials = {
+    type: 'visual-search-simple-task',
+    data: {task: 'primary', is_practice:false},
+    target: 'img/T0.BMP', 
+    target_colour: target_assignment,
+    foil: ['img/L0.BMP', 'img/L0_A.BMP', 'img/L0_B.BMP', 'img/L0_C.BMP'],
+    isi: 1000,
+    fixation_image: 'img/fixation.gif',
+    timeline: jsPsych.randomization.shuffle(timelineTrials).concat(instructionsBreak, jsPsych.randomization.shuffle(timelineTrials))
+  };
+
+  // SETUP FULL TIMELINE AND OTHER SETTINGS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  jsPsych.init({
+  	experiment_width: 800,
+  	use_webaudio: false,
+    default_iti:1000,
+    exclusions: {
+      min_width: 800,
+      min_height: 600
+    },
+    // YOU CAN RE ENABLE CONSENT FORM IF YOU HAVE THIS RUNNING ON A WEB SERVER
+    // RECOMMEND PERIODIC SAVING BETWEEN TRIAL BLOCKS TO MONITOR NON-FINISHERS
+    timeline: [/*consentForm, */instructionsPractice, trialsPractice, instructionsMain, trials, instructionsDebrief],
+    on_finish: function() {
+      // FOR YOU TO EDIT; ADD A FUNCTION TO SAVE DATA RIGHT HERE
+      jsPsych.data.displayData();
+    }
+  });
+</script>
+
+</html>
