@@ -1,5 +1,5 @@
 # HOIME
- **Here's One I Made Earlier** is a collection of psychology experiments for use, reuse and learning. The focus here for now is sharing studies that can be run online. <img align="right" src="readmeFiles/hoime.png">
+ **Here's One I Made Earlier** is a collection of psychology experiments for use, reuse and learning. The focus here for now is sharing studies that can be run online. <img align="right" src="readmeFiles/hoime.png" width='240' height='180'>
 
  If you'd like to contribute please do get in touch.
 
